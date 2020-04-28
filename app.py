@@ -1,28 +1,20 @@
-#----------------------------------------------------------------------------#
-# Imports
-#----------------------------------------------------------------------------#
-
-import json
-import dateutil.parser
-import babel
-from flask import Flask, render_template, request, Response, flash, redirect, url_for
-from flask_moment import Moment
-from flask_sqlalchemy import SQLAlchemy
-import logging
-from logging import Formatter, FileHandler
-from flask_wtf import Form
-from forms import *
-from sqlalchemy_utils import create_database, database_exists
 import config
 from models import db, Artist, Venue, Show
 import traceback
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 from sqlalchemy.orm.exc import NoResultFound
-
-#----------------------------------------------------------------------------#
-# App Config.
-#----------------------------------------------------------------------------#
+import dateutil.parser
+import babel
+from flask import Flask, render_template, request, Response, flash, redirect, url_for
+from flask_moment import Moment
+from flask_sqlalchemy import SQLAlchemy
+import logging
+import json
+from logging import Formatter, FileHandler
+from flask_wtf import Form
+from forms import *
+from sqlalchemy_utils import create_database, database_exists
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -32,11 +24,6 @@ migrate = Migrate(app, db)
 
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
-
-#----------------------------------------------------------------------------#
-# Filters.
-#----------------------------------------------------------------------------#
-
 
 def format_datetime(value, format='medium'):
     date = dateutil.parser.parse(value)
@@ -49,18 +36,10 @@ def format_datetime(value, format='medium'):
 
 app.jinja_env.filters['datetime'] = format_datetime
 
-#----------------------------------------------------------------------------#
-# Controllers.
-#----------------------------------------------------------------------------#
-
-
 @app.route('/')
 def index():
     return render_template('pages/home.html')
 
-
-#  Venues
-#  ----------------------------------------------------------------
 
 @app.route('/venues')
 def venues():
@@ -94,11 +73,6 @@ def show_venue(venue_id):
     # data = [v.serialize_with_upcoming_shows_count for v in venues][0]
     data = venues.serialize_with_shows_details
     return render_template('pages/show_venue.html', venue=data)
-
-
-#  Create Venue
-#  ----------------------------------------------------------------
-
 
 @app.route('/venues/create', methods=['GET'])
 def create_venue_form():
@@ -144,8 +118,6 @@ def delete_venue(venue_id):
     except NoResultFound:
         abort(404)
 
-#  Artists
-#  ----------------------------------------------------------------
 @app.route('/artists')
 def artists():
     artists = Artist.query.all()
@@ -177,8 +149,6 @@ def show_artist(artist_id):
 
     return render_template('pages/show_artist.html', artist=data)
 
-#  Update
-#  ----------------------------------------------------------------
 @app.route('/artists/<int:artist_id>/edit', methods=['GET'])
 def edit_artist(artist_id):
     artist_form = ArtistForm()
@@ -283,10 +253,6 @@ def create_artist_submission():
 
     return render_template('pages/home.html')
 
-
-#  Shows
-#  ----------------------------------------------------------------
-
 @app.route('/shows')
 def shows():
     shows = Show.query.all()
@@ -340,10 +306,6 @@ if not app.debug:
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
     app.logger.info('errors')
-
-#----------------------------------------------------------------------------#
-# Launch.
-#----------------------------------------------------------------------------#
 
 # Default port:
 if __name__ == '__main__':
